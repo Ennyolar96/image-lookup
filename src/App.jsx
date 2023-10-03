@@ -17,6 +17,7 @@ const App = () => {
 
   // fetch function
   const fetchData = async () => {
+    setLoading(true);
     try {
       // get data from API using page and perPage
       const response = await axios.get(
@@ -24,6 +25,7 @@ const App = () => {
       );
       // append new data to existing data
       setData((prevData) => [...prevData, ...response.data.results]);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
