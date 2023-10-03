@@ -8,7 +8,10 @@ const App = () => {
   const [page, setPage] = useState(1); // current page number
   const [img, setImg] = useState("");
   const [perPage] = useState(20); // number of items per page
-  const [data, setData] = useState([]); // data from API
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  // const [download, setDownload] = useState(false);
+  const [selectedItemIndex, setSelectedItemIndex] = useState(null);
 
   const Access = import.meta.env.VITE_REACT_APP_ACCESS_KEY;
 
@@ -27,7 +30,10 @@ const App = () => {
   };
 
   useEffect(() => {
-    randomImage(Access).then((res) => setData(res));
+    randomImage(Access).then((res) => {
+      setData(res);
+      setLoading(false);
+    });
   }, [Access]);
 
   const handleLoadMore = () => {
@@ -41,13 +47,17 @@ const App = () => {
     fetchData();
   };
 
+  const handleItemClick = (index) => {
+    setSelectedItemIndex(index);
+  };
+
   return (
     <div className="container-fluid">
       <div className="position-relative shadow-sm my-2 rounded-pill">
         <input
           className="form-control shadow-none text-capitalize rounded-pill w-100"
           type="text"
-          placeholder="Search any image..."
+          placeholder="Search your favorite images..."
           value={img}
           onChange={(e) => setImg(e.target.value)}
         />
@@ -61,9 +71,11 @@ const App = () => {
         </button>
       </div>
 
+      {loading ? <p>Images Loading.....</p> : ""}
+
       <div className="row row-cols-md-4 row-cols-sm-3 row-cols-2 my-4">
         {data.map(({ id, links, urls, alt_description }) => (
-          <div className="col" key={id}>
+          <div className="col" key={id} onClick={() => handleItemClick(id)}>
             <div className="position-relative">
               <div
                 className="my-2 w-100 trigger-element"
@@ -75,7 +87,14 @@ const App = () => {
                   alt={alt_description}
                 />
               </div>
-              <div className="rounded p-1 hidden-div">
+
+              <div
+                className={
+                  id === selectedItemIndex
+                    ? "rounded p-1 show-div"
+                    : "hidden-div"
+                }
+              >
                 <a
                   className="d-block w-100"
                   href={links.download}
