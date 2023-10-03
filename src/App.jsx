@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import "./styles.css";
+import randomImage from "./components/random";
 
 const App = () => {
   // state variables
@@ -20,15 +21,14 @@ const App = () => {
       );
       // append new data to existing data
       setData((prevData) => [...prevData, ...response.data.results]);
-      console.log(response);
     } catch (error) {
       console.log(error);
     }
   };
 
-  // useEffect(() => {
-  //   fetchData();
-  // }, [page]);
+  useEffect(() => {
+    randomImage(Access).then((res) => setData(res));
+  }, [Access]);
 
   const handleLoadMore = () => {
     setPage((prevPage) => prevPage + 1);
@@ -95,6 +95,7 @@ const App = () => {
 
       {data.length > 0 && (
         <button
+          disabled={img === "" ? true : ""}
           className="mb-5 btn btn-md fs-5 w-100 btn-dark"
           onClick={handleLoadMore}
         >
