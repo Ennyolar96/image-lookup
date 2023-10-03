@@ -103,7 +103,7 @@ const App = () => {
                   rel="noreferrer"
                 >
                   <button className="btn btn-sm btn-primary w-100 shadow-none fs-6">
-                    <i className="fa fa-download"></i> Download
+                    <i className="fa fa-eye"></i> Preview
                   </button>
                 </a>
               </div>
