@@ -37,7 +37,6 @@ const App = () => {
 
   const handleSubmit = () => {
     setData([]);
-    setPage(1);
     fetchData();
   };
 
