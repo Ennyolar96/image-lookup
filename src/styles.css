@@ -28,6 +28,22 @@
   position: relative;
 }
 
+.scrollTop {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+}
+
+.hide-top-top {
+  display: none;
+}
+
 /* .trigger-element:hover + .hidden-div {
   display: flex;
 } */

@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import "./styles.css";
 import randomImage from "./components/random";
+import ScrollToTopButton from "./components/scroll-to-top";
+import { RenderImages } from "./components/images";
 
 const App = () => {
   // state variables
@@ -9,15 +11,11 @@ const App = () => {
   const [img, setImg] = useState("");
   const [perPage] = useState(20); // number of items per page
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  // const [download, setDownload] = useState(false);
-  const [selectedItemIndex, setSelectedItemIndex] = useState(null);
 
   const Access = import.meta.env.VITE_REACT_APP_ACCESS_KEY;
 
   // fetch function
   const fetchData = async () => {
-    setLoading(true);
     try {
       // get data from API using page and perPage
       const response = await axios.get(
@@ -25,17 +23,13 @@ const App = () => {
       );
       // append new data to existing data
       setData((prevData) => [...prevData, ...response.data.results]);
-      setLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    randomImage(Access).then((res) => {
-      setData(res);
-      setLoading(false);
-    });
+    randomImage(Access).then((res) => setData(res));
   }, [Access]);
 
   const handleLoadMore = () => {
@@ -47,10 +41,6 @@ const App = () => {
     setData([]);
     setPage(1);
     fetchData();
-  };
-
-  const handleItemClick = (index) => {
-    setSelectedItemIndex(index);
   };
 
   return (
@@ -73,46 +63,7 @@ const App = () => {
         </button>
       </div>
 
-      {loading ? <p>Images Loading.....</p> : ""}
-
-      <div className="row row-cols-md-4 row-cols-sm-3 row-cols-2 my-4">
-        {data.map(({ id, links, urls, alt_description }) => (
-          <div className="col" key={id} onClick={() => handleItemClick(id)}>
-            <div className="position-relative">
-              <div
-                className="my-2 w-100 trigger-element"
-                style={{ height: "250px" }}
-              >
-                <img
-                  className="w-100 h-100 rounded"
-                  src={urls.small}
-                  alt={alt_description}
-                />
-              </div>
-
-              <div
-                className={
-                  id === selectedItemIndex
-                    ? "rounded p-1 show-div"
-                    : "hidden-div"
-                }
-              >
-                <a
-                  className="d-block w-100"
-                  href={links.download}
-                  download={alt_description}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <button className="btn btn-sm btn-primary w-100 shadow-none fs-6">
-                    <i className="fa fa-eye"></i> Preview
-                  </button>
-                </a>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+      <RenderImages data={data} />
 
       {data.length > 0 && (
         <button
@@ -123,6 +74,7 @@ const App = () => {
           Load More
         </button>
       )}
+      <ScrollToTopButton />
     </div>
   );
 };
